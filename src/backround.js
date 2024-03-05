@@ -2,12 +2,13 @@
 
 // Écoute les messages envoyés par content.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "boldText") {
-      const boldTexts = request.boldTexts;
-      // Lance une recherche web pour chaque texte en gras
-      boldTexts.forEach(text => {
-        chrome.tabs.create({url: "https://www.google.com/search?q=" + encodeURIComponent(text)});
-      });
-    }
-  });
+  if (request.action === "boldText") {
+    console.log("Texte en gras détecté :", request.boldText);
+    const boldText = request.boldText;
+    // Lance une recherche web pour le texte en gras
+    const searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(boldText);
+    console.log("URL de recherche :", searchUrl);
+    chrome.tabs.create({url: searchUrl});
+  }
+});
   
