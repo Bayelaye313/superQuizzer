@@ -4,9 +4,10 @@
   "version": "1.0",
   "description": "Cette extension récupère le texte en gras sur une page web et lance une recherche web avec ce texte.",
   "permissions": [
-    "tabs",
-    "activeTab",   
-    "storage"
+    "activeTab",
+    "scripting",
+    "storage",
+    "scripting.execute"
   ],
   "host_permissions": [
     "https://web.whatsapp.com/*"

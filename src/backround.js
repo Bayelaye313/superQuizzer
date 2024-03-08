@@ -1,14 +1,23 @@
-// background.js
-
-// Écoute les messages envoyés par content.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "boldText") {
-    console.log("Texte en gras détecté :", request.boldText);
     const boldText = request.boldText;
-    // Lance une recherche web pour le texte en gras
     const searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(boldText);
-    console.log("URL de recherche :", searchUrl);
-    chrome.tabs.create({url: searchUrl});
+    
+    chrome.tabs.create({ url: searchUrl }, (tab) => {
+      chrome.scripting.executeScript(tab.id, {
+        function: extractAnswerFromGoogleDOM,
+        args: [boldText]
+      });
+    });
   }
 });
-  
+
+function extractAnswerFromGoogleDOM(boldText) {
+  const answerElement = document.querySelector("span.ILfuVd b");
+  if (answerElement) {
+    const answerText = answerElement.textContent.trim();
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "answerFromGoogle", answerText: answerText });
+    });
+  }
+}
