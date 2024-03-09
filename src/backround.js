@@ -4,7 +4,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(boldText);
     
     chrome.tabs.create({ url: searchUrl }, (tab) => {
-      chrome.scripting.executeScript(tab.id, {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
         function: extractAnswerFromGoogleDOM,
         args: [boldText]
       });
@@ -13,7 +14,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 function extractAnswerFromGoogleDOM(boldText) {
-  const answerElement = document.querySelector("span.ILfuVd b");
+  const answerElement = document.querySelector("div.LGOjhe b");
   if (answerElement) {
     const answerText = answerElement.textContent.trim();
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
